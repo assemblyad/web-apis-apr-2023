@@ -5,7 +5,7 @@
 namespace HrApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Depatments : Migration
+    public partial class Departments : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

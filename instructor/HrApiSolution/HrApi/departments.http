@@ -9,5 +9,9 @@ POST http://localhost:1337/departments
 Content-Type: application/json
 
 {
-  "name": "SAles"
+  "name": "SCRUM MASTERS"
 }
+
+
+### Get an individual departments
+GET http://localhost:1337/departments/1

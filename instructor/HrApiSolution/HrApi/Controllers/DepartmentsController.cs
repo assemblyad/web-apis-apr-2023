@@ -22,6 +22,7 @@ public class DepartmentsController : ControllerBase
     }
 
     [HttpPost("/departments")]
+    [ResponseCache(Duration = 5, Location = ResponseCacheLocation.Any)]
     public async Task<ActionResult> AddADepartment([FromBody] DepartmentCreateRequest request)
     {
 
@@ -30,16 +31,15 @@ public class DepartmentsController : ControllerBase
             return BadRequest(ModelState); // 400
 
         }
-      
-       
 
         var departmentToAdd = _mapper.Map<DepartmentEntity>(request);
+
         _context.Departments.Add(departmentToAdd );
         try
         {
             await _context.SaveChangesAsync();
             var response = _mapper.Map<DepartmentSummaryItem>(departmentToAdd);
-            return Ok(response);
+            return CreatedAtRoute("get-department-by-id", new { id = response.Id }, response);
         }
         catch (DbUpdateException ex)
         {
@@ -49,6 +49,7 @@ public class DepartmentsController : ControllerBase
 
 
     // GET /departments
+    [ResponseCache(Duration =5, Location = ResponseCacheLocation.Any)]
     [HttpGet("/departments")]
     public async Task<ActionResult<DepartmentsResponse>> GetDepartments()
     {
@@ -59,5 +60,22 @@ public class DepartmentsController : ControllerBase
                 .ToListAsync()
         };
         return Ok(response);
+    }
+    // GET /departments/8
+   
+    [HttpGet("/departments/{id:int}", Name ="get-department-by-id")]
+    public async Task<ActionResult> GetDepartmentById(int id)
+    {
+        var response = await _context.Departments
+             .Where(dept => dept.Id == id)
+             .ProjectTo<DepartmentSummaryItem>(_config)
+             .SingleOrDefaultAsync();
+        if(response is null)
+        {
+            return NotFound();
+        } else
+        {
+            return Ok(response);
+        }
     }
 }

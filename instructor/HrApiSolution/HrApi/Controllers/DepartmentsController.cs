@@ -60,4 +60,21 @@ public class DepartmentsController : ControllerBase
         };
         return Ok(response);
     }
+
+    [HttpGet("/departments/{id:int}")]
+    public async Task<ActionResult> GetDepartmentById(int id)
+    {
+        var response = await _context.Departments
+        .Where(dept => dept.Id == id)
+        .ProjectTo<DepartmentSummaryItem>(_config)
+        .SingleOrDefaultAsync();
+        if (response is null)
+        {
+            return NotFound();
+        }
+        else
+        {
+            return Ok(response);
+        }
+    }
 }

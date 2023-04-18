@@ -101,13 +101,13 @@ public class DepartmentsController : ControllerBase
     // GET /departments
     [ResponseCache(Duration = 5, Location = ResponseCacheLocation.Any)]
     [HttpGet()]
-    public async Task<ActionResult<DepartmentsResponse>> GetDepartments()
+    public async Task<ActionResult<DepartmentsResponse>> GetDepartments(CancellationToken token)
     {
         var response = new DepartmentsResponse
         {
             Data = await _context.GetActiveDepartments()
                 .ProjectTo<DepartmentSummaryItem>(_config)
-                .ToListAsync()
+                .ToListAsync(token)
         };
         return Ok(response);
     }

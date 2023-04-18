@@ -21,6 +21,20 @@ public class DepartmentsController : ControllerBase
         _config = config;
     }
 
+    [HttpDelete("/departments/{id:int}")]
+    public async Task<ActionResult> RemoveDepartment(int id)
+    {
+        var department = await _context.GetActiveDepartments()
+            .SingleOrDefaultAsync(d => d.Id == id);
+        if (department != null)
+        {
+            department.Removed = true;
+            //_context.Departments.Remove(department);
+            await _context.SaveChangesAsync();
+        }
+        return NoContent(); // 204 - success, but no content (body)
+    }
+
     [HttpPost("/departments")]
     [ResponseCache(Duration = 5, Location = ResponseCacheLocation.Any)]
     public async Task<ActionResult> AddADepartment([FromBody] DepartmentCreateRequest request)
@@ -34,7 +48,7 @@ public class DepartmentsController : ControllerBase
 
         var departmentToAdd = _mapper.Map<DepartmentEntity>(request);
 
-        _context.Departments.Add(departmentToAdd );
+        _context.Departments.Add(departmentToAdd);
         try
         {
             await _context.SaveChangesAsync();
@@ -49,31 +63,32 @@ public class DepartmentsController : ControllerBase
 
 
     // GET /departments
-    [ResponseCache(Duration =5, Location = ResponseCacheLocation.Any)]
+    [ResponseCache(Duration = 5, Location = ResponseCacheLocation.Any)]
     [HttpGet("/departments")]
     public async Task<ActionResult<DepartmentsResponse>> GetDepartments()
     {
         var response = new DepartmentsResponse
         {
-            Data = await _context.Departments
+            Data = await _context.GetActiveDepartments()
                 .ProjectTo<DepartmentSummaryItem>(_config)
                 .ToListAsync()
         };
         return Ok(response);
     }
     // GET /departments/8
-   
-    [HttpGet("/departments/{id:int}", Name ="get-department-by-id")]
+
+    [HttpGet("/departments/{id:int}", Name = "get-department-by-id")]
     public async Task<ActionResult> GetDepartmentById(int id)
     {
-        var response = await _context.Departments
+        var response = await _context.GetActiveDepartments()
              .Where(dept => dept.Id == id)
              .ProjectTo<DepartmentSummaryItem>(_config)
              .SingleOrDefaultAsync();
-        if(response is null)
+        if (response is null)
         {
             return NotFound();
-        } else
+        }
+        else
         {
             return Ok(response);
         }

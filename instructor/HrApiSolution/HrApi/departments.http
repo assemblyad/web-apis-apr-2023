@@ -15,3 +15,17 @@ Content-Type: application/json
 
 ### Get an individual departments
 GET http://localhost:1337/departments/1
+
+
+### Delete a Department
+DELETE http://localhost:1337/departments/7
+
+
+### Updating (PUT) Department
+PUT http://localhost:1337/departments/1
+Content-Type: application/json
+
+{
+  "id": "1",
+  "name": "Software Engineers"
+}

@@ -2,6 +2,7 @@
 
 namespace HrApi.Models;
 
+
 public record DepartmentCreateRequest
 {
     [Required, MinLength(3), MaxLength(20)]

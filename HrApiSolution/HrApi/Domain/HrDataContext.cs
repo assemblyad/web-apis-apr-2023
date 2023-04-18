@@ -15,13 +15,10 @@ public class HrDataContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<DepartmentEntity>().Property(p => p.Name)
-        .HasMaxLength(20);
-
-
+            .HasMaxLength(20);
 
         modelBuilder.Entity<DepartmentEntity>()
-        .HasIndex(b => b.Name).IsUnique();
+            .HasIndex(b => b.Name).IsUnique();
 
     }
-
 }

@@ -20,7 +20,7 @@ builder.Services.AddControllers(options =>
 
 }).AddJsonOptions(options =>
 {
-   // options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+   options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -78,6 +78,9 @@ var mapperConfiguration = new MapperConfiguration(options =>
 
 builder.Services.AddSingleton<IMapper>(mapperConfiguration.CreateMapper());
 builder.Services.AddSingleton<MapperConfiguration>(mapperConfiguration);
+
+// Lazy 
+builder.Services.AddScoped<IManageHiringRequests, EntityFrameworkHiringManager>();
 
 // before the application is built is above here services.
 var app = builder.Build();

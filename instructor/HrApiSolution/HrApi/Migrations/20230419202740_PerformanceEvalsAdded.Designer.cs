@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HrApi.Migrations
 {
     [DbContext(typeof(HrDataContext))]
-    [Migration("20230419184708_SalaryForHiringRequest")]
-    partial class SalaryForHiringRequest
+    [Migration("20230419202740_PerformanceEvalsAdded")]
+    partial class PerformanceEvalsAdded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,38 @@ namespace HrApi.Migrations
                     b.ToTable("Departments");
                 });
 
+            modelBuilder.Entity("HrApi.Domain.EmployeeEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("HiredOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("HrApi.Domain.HiringRequestEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -73,6 +105,7 @@ namespace HrApi.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Salary")
+                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Status")
@@ -81,6 +114,47 @@ namespace HrApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("HiringRequests");
+                });
+
+            modelBuilder.Entity("HrApi.Domain.PerformanceEvalEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("PerformanceEvals");
+                });
+
+            modelBuilder.Entity("HrApi.Domain.EmployeeEntity", b =>
+                {
+                    b.HasOne("HrApi.Domain.DepartmentEntity", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId");
+
+                    b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("HrApi.Domain.PerformanceEvalEntity", b =>
+                {
+                    b.HasOne("HrApi.Domain.EmployeeEntity", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

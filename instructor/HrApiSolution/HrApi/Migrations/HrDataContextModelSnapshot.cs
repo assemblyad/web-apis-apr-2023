@@ -113,6 +113,27 @@ namespace HrApi.Migrations
                     b.ToTable("HiringRequests");
                 });
 
+            modelBuilder.Entity("HrApi.Domain.PerformanceEvalEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("PerformanceEvals");
+                });
+
             modelBuilder.Entity("HrApi.Domain.EmployeeEntity", b =>
                 {
                     b.HasOne("HrApi.Domain.DepartmentEntity", "Department")
@@ -120,6 +141,17 @@ namespace HrApi.Migrations
                         .HasForeignKey("DepartmentId");
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("HrApi.Domain.PerformanceEvalEntity", b =>
+                {
+                    b.HasOne("HrApi.Domain.EmployeeEntity", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

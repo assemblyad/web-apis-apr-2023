@@ -1,0 +1,20 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=TokyoJoe138!
+    ports:
+      - 1433:1433 
+  api:
+    image: hr-web-api:latest
+    ports:
+      - 1337:80
+    environment:
+      - ConnectionStrings__hr-data=Server=db;Database=hr-dev;User Id=SA;Password=TokyoJoe138!;Trust Server Certificate=true
+      - features__demo=false
+      - features__trueMessage="You Shouldn't See This"
+      - features__falseMessage="This is the disabled message"
+      - ASPNETCORE_ENVIRONMENT=Development
+
+# docker run -e ACCEPT_EULA=Y -e SA_PASSWORD=TokyoJoe138! -p 1433:1433 mcr.microsoft.com/mssql/server:2022-latest

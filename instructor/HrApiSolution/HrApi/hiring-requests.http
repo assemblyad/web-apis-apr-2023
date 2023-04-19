@@ -8,3 +8,18 @@ Content-Type: application/json
   "lastName": "Dylan",
   "notes": "Super hacker dude. Also plays guitar in some 80's band."
 }
+
+
+### Get A Hiring Request
+
+GET http://localhost:1337/hiring-requests/2
+
+### Assigning Salary
+
+PUT http://localhost:1337/hiring-requests/2/salary
+Content-Type: application/json
+
+{
+  "salary": 182000
+}
+

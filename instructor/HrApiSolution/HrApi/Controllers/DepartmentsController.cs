@@ -25,6 +25,28 @@ public class DepartmentsController : ControllerBase
         _config = config;
     }
 
+    [HttpGet("{id:int}/employees")]
+    public async Task<ActionResult> GetEmployeesForDepartment(int id)
+    {
+
+        var department = await _context.Departments.SingleOrDefaultAsync(d => d.Id == id);
+        if(department is null)
+        {
+            return NotFound();
+        }
+        var results = await _context.Employees
+            .Include(e => e.Department)
+            .Where(e => e.Department!.Id == id)
+            .Select(e => new EmployeeSummaryItem
+            {
+                Id = e.Id.ToString(),
+                Name = $"{e.FirstName} {e.LastName}",
+                Department = e.Department!.Name
+            })
+            .ToListAsync(); // TODO: Don't send domain objects to the client!
+        return Ok(new { Data = results });
+    }
+
     [HttpPut("{id:int}")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
